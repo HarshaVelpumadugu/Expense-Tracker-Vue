@@ -9,18 +9,18 @@
 
 <script>
 import { ref, onMounted, watch } from "vue";
-import { useStore } from "vuex";
+import { useExpenseStore } from "../store/index.js";
 import Chart from "chart.js/auto";
 
 export default {
   setup() {
-    const store = useStore();
+    const expenseStore = useExpenseStore();
     const canvas = ref(null);
     let chart = null;
 
     function buildData() {
       const totals = {};
-      store.state.expenses.forEach((exp) => {
+      expenseStore.expenses.forEach((exp) => {
         const name =
           {
             food: "Food",
@@ -77,17 +77,15 @@ export default {
       chart.data.datasets[0].data = data;
       chart.update();
     }
-
     onMounted(() => {
       initChart();
     });
-
-    watch(() => store.state.expenses, updateChart, { deep: true });
-
+    watch(() => expenseStore.expenses, updateChart, { deep: true });
     return { canvas };
   },
 };
 </script>
+
 <style scoped>
 .category-card {
   background: #fff;

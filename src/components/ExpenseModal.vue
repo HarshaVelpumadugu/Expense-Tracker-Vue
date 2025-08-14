@@ -90,12 +90,13 @@
 
 <script>
 import { reactive, watch, onMounted } from "vue";
-import { useStore } from "vuex";
+import { useExpenseStore } from "../store/index.js";
 
 export default {
   props: { editing: { type: Object, default: null } },
   setup(props, { emit }) {
-    const store = useStore();
+    const expenseStore = useExpenseStore();
+
     const form = reactive({
       id: null,
       amount: null,
@@ -114,7 +115,7 @@ export default {
       setDefaultDate();
     });
 
-    // if editing prop changes, prefill
+    // Prefill form when editing
     watch(
       () => props.editing,
       (val) => {
@@ -172,9 +173,9 @@ export default {
         timestamp: new Date().toISOString(),
       };
       if (props.editing) {
-        store.dispatch("finishEditExpense", payload);
+        expenseStore.finishEditExpense(payload);
       } else {
-        store.dispatch("addExpense", payload);
+        expenseStore.addExpense(payload);
       }
       emit("close");
     }
@@ -183,6 +184,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 .expense-overlay {
   position: fixed;

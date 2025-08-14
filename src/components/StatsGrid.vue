@@ -30,27 +30,30 @@
 
 <script>
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useExpenseStore } from "../store/index.js";
 
 export default {
   setup() {
-    const store = useStore();
+    const expenseStore = useExpenseStore();
+
     const totalExpensesLocale = computed(
-      () => ` ${store.getters.totalExpenses.toLocaleString("en-IN")}`
+      () => `${expenseStore.totalExpenses.toLocaleString("en-IN")}`
     );
     const avgDailyLocale = computed(
-      () => `${Math.round(store.getters.avgDaily).toLocaleString("en-IN")}`
+      () => `${Math.round(expenseStore.avgDaily).toLocaleString("en-IN")}`
     );
+
     return {
       totalExpensesLocale,
       avgDailyLocale,
-      topCategory: computed(() => store.getters.topCategory),
-      paymentRatio: computed(() => store.getters.paymentRatio),
-      expenseCount: computed(() => store.getters.expenseCount),
+      topCategory: computed(() => expenseStore.topCategory),
+      paymentRatio: computed(() => expenseStore.paymentRatio),
+      expenseCount: computed(() => expenseStore.expenseCount),
     };
   },
 };
 </script>
+
 <style scoped>
 /* Dashboard Stats */
 .stats-grid {

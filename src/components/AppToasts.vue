@@ -22,11 +22,12 @@
 
 <script>
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useExpenseStore } from "../store/index.js";
+
 export default {
   setup() {
-    const store = useStore();
-    const toasts = computed(() => store.state.toasts);
+    const expenseStore = useExpenseStore();
+    const toasts = computed(() => expenseStore.toasts);
     return { toasts };
   },
 };

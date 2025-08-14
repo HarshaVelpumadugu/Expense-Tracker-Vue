@@ -54,7 +54,7 @@
 
 <script>
 import { ref, computed, watch } from "vue";
-import { useStore } from "vuex";
+import { useExpenseStore } from "./store/index.js";
 import AppHeader from "./components/AppHeader.vue";
 import StatsGrid from "./components/StatsGrid.vue";
 import FiltersPanel from "./components/FiltersPanel.vue";
@@ -78,28 +78,31 @@ export default {
     AppToasts,
   },
   setup() {
-    const store = useStore();
+    const store = useExpenseStore();
     const activeTab = ref("expenses");
     const showExpenseModal = ref(false);
     const showBudgetModal = ref(false);
 
-    const editingExpense = computed(() => store.state.editingExpense);
+    const editingExpense = computed(() => store.editingExpense);
 
     watch(editingExpense, (val) => {
       if (val) showExpenseModal.value = true;
     });
 
     function onOpenAdd() {
-      store.commit("SET_EDITING", null);
+      store.editingExpense = null;
       showExpenseModal.value = true;
     }
+
     function openEdit(expense) {
-      store.commit("SET_EDITING", expense);
+      store.startEditExpense(expense);
     }
+
     function closeExpenseModal() {
       showExpenseModal.value = false;
-      store.dispatch("clearEditing");
+      store.clearEditing();
     }
+
     function closeBudgetModal() {
       showBudgetModal.value = false;
     }
@@ -117,6 +120,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 @media (max-width: 768px) {
   .container {

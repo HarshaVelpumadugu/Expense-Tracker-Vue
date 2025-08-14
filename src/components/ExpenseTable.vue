@@ -76,16 +76,17 @@
 
 <script>
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useExpenseStore } from "../store/index.js";
 import BasePagination from "./BasePagination.vue";
 
 export default {
   components: { BasePagination },
   setup() {
-    const store = useStore();
-    const paginated = computed(() => store.getters.paginatedExpenses);
-    const totalPages = computed(() => store.getters.totalPages);
-    const currentPage = computed(() => store.state.currentPage);
+    const expenseStore = useExpenseStore();
+
+    const paginated = computed(() => expenseStore.paginatedExpenses);
+    const totalPages = computed(() => expenseStore.totalPages);
+    const currentPage = computed(() => expenseStore.currentPage);
 
     function formatDate(d) {
       try {
@@ -99,6 +100,7 @@ export default {
         return d;
       }
     }
+
     function categoryIcon(c) {
       const icons = {
         food: "🍕",
@@ -110,6 +112,7 @@ export default {
       };
       return icons[c] || "📋";
     }
+
     function categoryName(c) {
       const names = {
         food: "Food",
@@ -121,20 +124,23 @@ export default {
       };
       return names[c] || c;
     }
+
     function cap(s) {
       return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
     }
 
     function deleteExpense(id) {
       if (confirm("Are you sure you want to delete this expense?")) {
-        store.dispatch("deleteExpense", id);
+        expenseStore.deleteExpense(id);
       }
     }
+
     function changePage(p) {
-      store.dispatch("changePage", p);
+      expenseStore.changePage(p);
     }
+
     function sort(field) {
-      store.dispatch("sortTable", field);
+      expenseStore.sortTable(field);
     }
 
     return {
@@ -152,6 +158,7 @@ export default {
   },
 };
 </script>
+
 <style scoped>
 :root {
   --primary-color: #667eea;
