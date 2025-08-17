@@ -185,7 +185,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .expense-overlay {
   position: fixed;
   top: 0;
@@ -196,35 +196,40 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.expense-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 1rem;
-  width: 400px;
-  max-width: 90%;
-  position: relative;
-}
-.close-btn {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-.radio-group {
-  display: flex;
-  gap: 1rem;
-}
-.radio-option {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-.error-message {
-  color: #f44336;
-  font-size: 0.8rem;
+
+  .expense-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    width: 400px;
+    max-width: 90%;
+    position: relative;
+
+    .close-btn {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 1rem;
+
+      .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+    }
+
+    .error-message {
+      color: #f44336;
+      font-size: 0.8rem;
+    }
+  }
 }
 </style>

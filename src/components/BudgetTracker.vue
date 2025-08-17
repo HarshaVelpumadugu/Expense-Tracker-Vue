@@ -49,7 +49,7 @@
                 :style="{
                   width:
                     progressPercent(category) > 100
-                      ? 100
+                      ? 100 + '%'
                       : progressPercent(category) + '%',
                 }"
               ></div>
@@ -166,57 +166,66 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .budget-card {
   background: #fff;
   border-radius: 12px;
   padding: 1rem;
-}
-.budget-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.budget-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.budget-item {
-  background: #f9f9f9;
-  border-radius: 8px;
-  padding: 0.8rem;
-}
-.budget-item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.progress-bar {
-  height: 8px;
-  background: #ddd;
-  border-radius: 4px;
-  margin: 0.5rem 0;
-}
-.progress-fill {
-  height: 8px;
-  border-radius: 4px;
-}
-.progress-success {
-  background: #4caf50;
-}
-.progress-warning {
-  background: #ffc107;
-}
-.progress-danger {
-  background: #f44336;
-}
-.budget-details {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.85rem;
-}
-.text-error {
-  color: #f44336;
+
+  .budget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .budget-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .budget-item {
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 0.8rem;
+
+      .budget-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .progress-bar {
+        height: 8px;
+        background: #ddd;
+        border-radius: 4px;
+        margin: 0.5rem 0;
+
+        .progress-fill {
+          height: 8px;
+          border-radius: 4px;
+
+          &.progress-success {
+            background: #4caf50;
+          }
+          &.progress-warning {
+            background: #ffc107;
+          }
+          &.progress-danger {
+            background: #f44336;
+          }
+        }
+      }
+
+      .budget-details {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+
+        .text-error {
+          color: #f44336;
+        }
+      }
+    }
+  }
 }
 </style>

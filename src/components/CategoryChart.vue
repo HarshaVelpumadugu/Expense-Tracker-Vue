@@ -86,14 +86,15 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .category-card {
   background: #fff;
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-.chart-container {
-  height: 300px;
+
+  .chart-container {
+    height: 300px;
+  }
 }
 </style>

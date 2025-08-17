@@ -62,7 +62,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .modal {
   position: fixed;
   top: 0;
@@ -73,22 +73,24 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.modal-content {
-  background: #fff;
-  border-radius: 12px;
-  padding: 1rem;
-  width: 350px;
-  max-width: 90%;
-  position: relative;
-}
-.modal-close {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
+
+  .modal-content {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    width: 350px;
+    max-width: 90%;
+    position: relative;
+
+    .modal-close {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  }
 }
 </style>

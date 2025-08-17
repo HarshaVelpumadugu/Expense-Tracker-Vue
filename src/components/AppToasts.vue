@@ -32,7 +32,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 #toastContainer {
   position: fixed;
   top: 1rem;
@@ -40,26 +40,31 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+
+  .toast {
+    background: #333;
+    color: #fff;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    animation: fadeIn 0.3s ease-out;
+
+    &-success {
+      background: #4caf50;
+    }
+
+    &-error {
+      background: #f44336;
+    }
+
+    &-info {
+      background: #2196f3;
+    }
+  }
 }
-.toast {
-  background: #333;
-  color: #fff;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  animation: fadeIn 0.3s ease-out;
-}
-.toast-success {
-  background: #4caf50;
-}
-.toast-error {
-  background: #f44336;
-}
-.toast-info {
-  background: #2196f3;
-}
+
 @keyframes fadeIn {
   from {
     opacity: 0;

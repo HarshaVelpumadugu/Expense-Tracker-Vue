@@ -15,7 +15,7 @@
 <script>
 export default { name: "AppHeader" };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .header {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
@@ -24,25 +24,26 @@ export default { name: "AppHeader" };
   margin-bottom: var(--spacing-xl);
   box-shadow: var(--shadow-lg);
   text-align: center;
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(
+      135deg,
+      var(--primary-color),
+      var(--secondary-color)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+  }
 }
 
-.header h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  background: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--secondary-color)
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: var(--spacing-sm);
-}
-
-.header p {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-}
 .main-header {
   display: flex;
   align-items: center;
@@ -50,6 +51,7 @@ export default { name: "AppHeader" };
   padding: var(--spacing-sm);
   flex-wrap: wrap;
 }
+
 .add-expense-btn {
   background-color: var(--primary-color);
   border-radius: 50px;
