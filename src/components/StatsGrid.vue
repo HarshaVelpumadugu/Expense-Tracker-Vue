@@ -30,71 +30,74 @@
 
 <script>
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useExpenseStore } from "../store/index.js";
 
 export default {
   setup() {
-    const store = useStore();
+    const expenseStore = useExpenseStore();
+
     const totalExpensesLocale = computed(
-      () => ` ${store.getters.totalExpenses.toLocaleString("en-IN")}`
+      () => `${expenseStore.totalExpenses.toLocaleString("en-IN")}`
     );
     const avgDailyLocale = computed(
-      () => `${Math.round(store.getters.avgDaily).toLocaleString("en-IN")}`
+      () => `${Math.round(expenseStore.avgDaily).toLocaleString("en-IN")}`
     );
+
     return {
       totalExpensesLocale,
       avgDailyLocale,
-      topCategory: computed(() => store.getters.topCategory),
-      paymentRatio: computed(() => store.getters.paymentRatio),
-      expenseCount: computed(() => store.getters.expenseCount),
+      topCategory: computed(() => expenseStore.topCategory),
+      paymentRatio: computed(() => expenseStore.paymentRatio),
+      expenseCount: computed(() => expenseStore.expenseCount),
     };
   },
 };
 </script>
-<style scoped>
+
+<style lang="scss" scoped>
 /* Dashboard Stats */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: var(--spacing-lg);
   margin-bottom: var(--spacing-xl);
-}
 
-.stat-card {
-  background: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--primary-dark)
-  );
-  color: white;
-  padding: var(--spacing-lg);
-  border-radius: var(--border-radius);
-  text-align: center;
-  box-shadow: var(--shadow-md);
-  transition: var(--transition);
-}
+  .stat-card {
+    background: linear-gradient(
+      135deg,
+      var(--primary-color),
+      var(--primary-dark)
+    );
+    color: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    text-align: center;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
 
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-}
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
 
-.stat-card .icon {
-  font-size: 2rem;
-  margin-bottom: var(--spacing-sm);
-  opacity: 0.8;
-}
+    .icon {
+      font-size: 2rem;
+      margin-bottom: var(--spacing-sm);
+      opacity: 0.8;
+    }
 
-.stat-card .value {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: var(--spacing-xs);
-  overflow-wrap: break-word;
-  hyphens: auto;
-}
+    .value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: var(--spacing-xs);
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
 
-.stat-card .label {
-  font-size: 0.9rem;
-  opacity: 0.8;
+    .label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+  }
 }
 </style>

@@ -36,21 +36,23 @@
 
 <script>
 import { ref } from "vue";
-import { useStore } from "vuex";
+import { useExpenseStore } from "../store/index.js";
+
 export default {
   setup(_, { emit }) {
-    const store = useStore();
+    const expenseStore = useExpenseStore();
     const category = ref("food");
     const amount = ref(null);
+
     function onSubmit() {
       if (!category.value || !amount.value || amount.value <= 0) {
-        store.dispatch("pushToast", {
+        expenseStore.pushToast({
           message: "Please fill all fields correctly",
           type: "error",
         });
         return;
       }
-      store.dispatch("setBudget", {
+      expenseStore.setBudget({
         category: category.value,
         amount: Number(amount.value),
       });
@@ -60,7 +62,7 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .modal {
   position: fixed;
   top: 0;
@@ -71,22 +73,24 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.modal-content {
-  background: #fff;
-  border-radius: 12px;
-  padding: 1rem;
-  width: 350px;
-  max-width: 90%;
-  position: relative;
-}
-.modal-close {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
+
+  .modal-content {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    width: 350px;
+    max-width: 90%;
+    position: relative;
+
+    .modal-close {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  }
 }
 </style>

@@ -5,7 +5,6 @@
         <i class="fas fa-search search-icon"></i>
         <input
           v-model="searchInput"
-          @input="updateFilter('searchInput', searchInput)"
           class="search-input"
           placeholder="Search expenses..."
         />
@@ -13,11 +12,7 @@
 
       <div class="filter-group">
         <label>Category</label>
-        <select
-          v-model="categoryFilter"
-          @change="updateFilter('categoryFilter', categoryFilter)"
-          class="form-input"
-        >
+        <select v-model="categoryFilter" class="form-input">
           <option value="">All Categories</option>
           <option value="food">Food</option>
           <option value="transport">Transport</option>
@@ -30,11 +25,7 @@
 
       <div class="filter-group">
         <label>Payment Method</label>
-        <select
-          v-model="paymentFilter"
-          @change="updateFilter('paymentFilter', paymentFilter)"
-          class="form-input"
-        >
+        <select v-model="paymentFilter" class="form-input">
           <option value="">All Methods</option>
           <option value="cash">Cash</option>
           <option value="card">Card</option>
@@ -45,22 +36,12 @@
     <div class="filter-row">
       <div class="filter-group">
         <label>From Date</label>
-        <input
-          type="date"
-          v-model="fromDate"
-          @change="updateFilter('fromDate', fromDate)"
-          class="form-input"
-        />
+        <input type="date" v-model="fromDate" class="form-input" />
       </div>
 
       <div class="filter-group">
         <label>To Date</label>
-        <input
-          type="date"
-          v-model="toDate"
-          @change="updateFilter('toDate', toDate)"
-          class="form-input"
-        />
+        <input type="date" v-model="toDate" class="form-input" />
       </div>
 
       <div class="filter-group">
@@ -75,47 +56,55 @@
 
 <script>
 import { computed } from "vue";
-import { useStore } from "vuex";
+import { useExpenseStore } from "../store/index.js";
 
 export default {
   setup() {
-    const store = useStore();
-    const filters = computed(() => store.state.filters);
-    function updateFilter(key, value) {
-      store.dispatch("setFilter", { key, value });
-    }
+    const store = useExpenseStore();
+
+    // ✅ Directly bind computed setters to Pinia actions
+    const searchInput = computed({
+      get: () => store.filters.searchInput,
+      set: (value) => store.setFilter({ key: "searchInput", value }),
+    });
+
+    const categoryFilter = computed({
+      get: () => store.filters.categoryFilter,
+      set: (value) => store.setFilter({ key: "categoryFilter", value }),
+    });
+
+    const paymentFilter = computed({
+      get: () => store.filters.paymentFilter,
+      set: (value) => store.setFilter({ key: "paymentFilter", value }),
+    });
+
+    const fromDate = computed({
+      get: () => store.filters.fromDate,
+      set: (value) => store.setFilter({ key: "fromDate", value }),
+    });
+
+    const toDate = computed({
+      get: () => store.filters.toDate,
+      set: (value) => store.setFilter({ key: "toDate", value }),
+    });
+
     function clearAll() {
-      store.dispatch("clearFilters");
+      store.clearFilters();
     }
 
     return {
-      searchInput: computed({
-        get: () => filters.value.searchInput,
-        set: (v) => updateFilter("searchInput", v),
-      }),
-      categoryFilter: computed({
-        get: () => filters.value.categoryFilter,
-        set: (v) => updateFilter("categoryFilter", v),
-      }),
-      paymentFilter: computed({
-        get: () => filters.value.paymentFilter,
-        set: (v) => updateFilter("paymentFilter", v),
-      }),
-      fromDate: computed({
-        get: () => filters.value.fromDate,
-        set: (v) => updateFilter("fromDate", v),
-      }),
-      toDate: computed({
-        get: () => filters.value.toDate,
-        set: (v) => updateFilter("toDate", v),
-      }),
-      updateFilter,
+      searchInput,
+      categoryFilter,
+      paymentFilter,
+      fromDate,
+      toDate,
       clearAll,
     };
   },
 };
 </script>
-<style scoped>
+
+<style lang="scss" scoped>
 .filters {
   display: flex;
   flex-wrap: wrap;
@@ -125,52 +114,52 @@ export default {
   background: rgba(255, 255, 255, 0.9);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-sm);
-}
 
-/* Create rows */
-.filter-row {
-  display: flex;
-  gap: var(--spacing-md);
-  flex: 1 1 100%;
-  flex-wrap: wrap;
-  align-items: flex-end;
-}
+  /* Rows */
+  .filter-row {
+    display: flex;
+    gap: var(--spacing-md);
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
 
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-  min-width: 150px;
-  flex: 1;
-}
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    min-width: 150px;
+    flex: 1;
 
-.filter-group label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
+    label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+  }
 
-.search-container {
-  position: relative;
-  flex: 1;
-  min-width: 200px;
-}
+  .search-container {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
 
-.search-input {
-  width: 100%;
-  padding: var(--spacing-md);
-  padding-left: 40px;
-  border: 2px solid var(--border-color);
-  border-radius: var(--border-radius);
-  font-size: 1rem;
-  transition: var(--transition);
-}
+    .search-input {
+      width: 100%;
+      padding: var(--spacing-md);
+      padding-left: 40px;
+      border: 2px solid var(--border-color);
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
 
-.search-icon {
-  position: absolute;
-  left: var(--spacing-md);
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-secondary);
+    .search-icon {
+      position: absolute;
+      left: var(--spacing-md);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+    }
+  }
 }
 </style>

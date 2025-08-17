@@ -52,24 +52,27 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .pagination {
   display: flex;
   justify-content: center;
   margin-top: 1rem;
   gap: 0.3rem;
-}
-.pagination button {
-  padding: 0.3rem 0.6rem;
-  border: 1px solid #ddd;
-  background: #fff;
-  cursor: pointer;
-}
-.pagination button.active {
-  background: #4caf50;
-  color: #fff;
-}
-.pagination-dots {
-  padding: 0.3rem 0.6rem;
+
+  button {
+    padding: 0.3rem 0.6rem;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+
+    &.active {
+      background: #4caf50;
+      color: #fff;
+    }
+  }
+
+  .pagination-dots {
+    padding: 0.3rem 0.6rem;
+  }
 }
 </style>
