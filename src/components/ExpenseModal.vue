@@ -1,9 +1,11 @@
 <template>
-  <div class="expense-overlay" id="expenseOverlay">
+  <!-- v-model:open will control visibility from parent -->
+  <v-overlay :model-value="true" class="expense-overlay" persistent>
     <div class="expense-card" id="expenseCard">
       <button class="close-btn" @click="$emit('close')" aria-label="Close">
         &times;
       </button>
+
       <h2 class="mb-3">
         <i class="fas fa-plus-circle"></i>
         {{ editing ? "Edit Expense" : "Add Expense" }}
@@ -27,8 +29,7 @@
 
         <div class="form-group">
           <label class="form-label">Category *</label>
-          <select v-model="form.category" class="form-input">
-            <option value="">Select Category</option>
+          <select v-model="form.category" class="form-input" required>
             <option value="food">🍕 Food</option>
             <option value="transport">🚗 Transport</option>
             <option value="entertainment">🎬 Entertainment</option>
@@ -65,27 +66,27 @@
         <div class="form-group">
           <label class="form-label">Payment Method *</label>
           <div class="radio-group">
-            <label class="radio-option"
-              ><input type="radio" value="cash" v-model="form.paymentMethod" />
-              <span><i class="fas fa-money-bill-wave"></i> Cash</span></label
-            >
-            <label class="radio-option"
-              ><input type="radio" value="card" v-model="form.paymentMethod" />
-              <span><i class="fas fa-credit-card"></i> Card</span></label
-            >
+            <label class="radio-option">
+              <input type="radio" value="cash" v-model="form.paymentMethod" />
+              <span><i class="fas fa-money-bill-wave"></i> Cash</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" value="card" v-model="form.paymentMethod" />
+              <span><i class="fas fa-credit-card"></i> Card</span>
+            </label>
           </div>
           <div v-if="errors.paymentMethod" class="error-message show">
             {{ errors.paymentMethod }}
           </div>
         </div>
 
-        <button class="btn btn-primary w-full" type="submit">
+        <v-btn class="btn btn-primary w-full" type="submit">
           <i class="fas fa-plus"></i>
           <span>{{ editing ? "Save changes" : "Add Expense" }}</span>
-        </button>
+        </v-btn>
       </form>
     </div>
-  </div>
+  </v-overlay>
 </template>
 
 <script>
@@ -111,11 +112,13 @@ export default {
       const today = new Date().toISOString().split("T")[0];
       form.date = today;
     }
+
     onMounted(() => {
-      setDefaultDate();
+      if (!props.editing) {
+        setDefaultDate();
+      }
     });
 
-    // Prefill form when editing
     watch(
       () => props.editing,
       (val) => {
@@ -128,11 +131,11 @@ export default {
           form.paymentMethod = val.paymentMethod;
         } else {
           form.id = null;
-          form.amount = null;
-          form.category = "";
+          form.amount = 100;
+          form.category = "food";
           setDefaultDate();
-          form.description = "";
-          form.paymentMethod = "";
+          form.description = "Add some Description";
+          form.paymentMethod = "cash";
         }
       },
       { immediate: true }
@@ -187,13 +190,7 @@ export default {
 
 <style lang="scss" scoped>
 .expense-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
+  display: flex; /* same as before */
   align-items: center;
   justify-content: center;
 
@@ -229,6 +226,9 @@ export default {
     .error-message {
       color: #f44336;
       font-size: 0.8rem;
+    }
+    .v-btn {
+      background-color: rgb(88, 88, 255);
     }
   }
 }

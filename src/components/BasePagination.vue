@@ -1,78 +1,63 @@
 <template>
-  <div class="pagination" v-if="totalPages > 1">
-    <button
+  <div class="d-flex justify-center mt-4" v-if="totalPages > 1">
+    <!-- Previous Button -->
+    <v-btn
+      icon
+      variant="text"
       :disabled="currentPage === 1"
       @click="$emit('change-page', currentPage - 1)"
     >
-      <i class="fas fa-chevron-left"></i>
-    </button>
-    <template v-for="i in pagesToShow" :key="i.key">
-      <button
-        v-if="i.type === 'page'"
-        :class="{ active: i.page === currentPage }"
-        @click="$emit('change-page', i.page)"
-      >
-        {{ i.page }}
-      </button>
-      <span v-else class="pagination-dots">...</span>
-    </template>
-    <button
+    </v-btn>
+
+    <!-- Vuetify Pagination -->
+    <v-pagination
+      v-model="internalPage"
+      :length="totalPages"
+      total-visible="5"
+      @update:model-value="$emit('change-page', $event)"
+      rounded="circle"
+      color="primary"
+    />
+
+    <!-- Next Button -->
+    <v-btn
+      icon
+      variant="text"
       :disabled="currentPage === totalPages"
       @click="$emit('change-page', currentPage + 1)"
     >
-      <i class="fas fa-chevron-right"></i>
-    </button>
+    </v-btn>
   </div>
 </template>
 
 <script>
-import { computed } from "vue";
+import { ref, watch } from "vue";
+
 export default {
   props: {
     totalPages: { type: Number, required: true },
     currentPage: { type: Number, required: true },
   },
+  emits: ["change-page"],
   setup(props) {
-    const pagesToShow = computed(() => {
-      const arr = [];
-      for (let i = 1; i <= props.totalPages; i++) {
-        if (
-          i === 1 ||
-          i === props.totalPages ||
-          (i >= props.currentPage - 1 && i <= props.currentPage + 1)
-        ) {
-          arr.push({ type: "page", page: i, key: `p${i}` });
-        } else if (i === props.currentPage - 2 || i === props.currentPage + 2) {
-          arr.push({ type: "dots", key: `d${i}` });
-        }
+    const internalPage = ref(props.currentPage);
+
+    // keep in sync with parent
+    watch(
+      () => props.currentPage,
+      (val) => {
+        internalPage.value = val;
       }
-      return arr;
-    });
-    return { pagesToShow };
+    );
+
+    return { internalPage };
   },
 };
 </script>
-<style lang="scss" scoped>
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-  gap: 0.3rem;
 
-  button {
-    padding: 0.3rem 0.6rem;
-    border: 1px solid #ddd;
-    background: #fff;
-    cursor: pointer;
-
-    &.active {
-      background: #4caf50;
-      color: #fff;
-    }
-  }
-
-  .pagination-dots {
-    padding: 0.3rem 0.6rem;
-  }
+<style scoped>
+/* optional tweaks */
+.v-pagination {
+  margin: 0 0.5rem;
 }
 </style>

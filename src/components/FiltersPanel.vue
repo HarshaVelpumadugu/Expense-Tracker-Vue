@@ -1,57 +1,106 @@
 <template>
-  <div class="filters">
-    <div class="filter-row">
-      <div class="search-container">
-        <i class="fas fa-search search-icon"></i>
-        <input
+  <v-card class="pa-4">
+    <v-row dense>
+      <!-- Search -->
+      <v-col cols="12" md="4">
+        <v-text-field
           v-model="searchInput"
-          class="search-input"
-          placeholder="Search expenses..."
+          label="Search expenses..."
+          prepend-inner-icon="mdi-magnify"
+          clearable
         />
-      </div>
+      </v-col>
 
-      <div class="filter-group">
-        <label>Category</label>
-        <select v-model="categoryFilter" class="form-input">
-          <option value="">All Categories</option>
-          <option value="food">Food</option>
-          <option value="transport">Transport</option>
-          <option value="entertainment">Entertainment</option>
-          <option value="shopping">Shopping</option>
-          <option value="bills">Bills</option>
-          <option value="others">Others</option>
-        </select>
-      </div>
+      <!-- Category -->
+      <v-col cols="12" md="4">
+        <v-select
+          v-model="categoryFilter"
+          :items="categories"
+          label="Category"
+          clearable
+        />
+      </v-col>
 
-      <div class="filter-group">
-        <label>Payment Method</label>
-        <select v-model="paymentFilter" class="form-input">
-          <option value="">All Methods</option>
-          <option value="cash">Cash</option>
-          <option value="card">Card</option>
-        </select>
-      </div>
-    </div>
+      <!-- Payment Method -->
+      <v-col cols="12" md="4">
+        <v-select
+          v-model="paymentFilter"
+          :items="paymentMethods"
+          label="Payment Method"
+          clearable
+        />
+      </v-col>
+    </v-row>
 
-    <div class="filter-row">
-      <div class="filter-group">
-        <label>From Date</label>
-        <input type="date" v-model="fromDate" class="form-input" />
-      </div>
+    <!-- ✅ From Date, To Date, Clear Filters -->
+    <v-row dense>
+      <!-- From Date -->
+      <v-col cols="12" md="4">
+        <v-menu
+          v-model="fromMenu"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
+        >
+          <template v-slot:activator="{ props }">
+            <v-text-field
+              v-model="fromDate"
+              label="From Date"
+              readonly
+              v-bind="props"
+            >
+              <template #append-inner>
+                <v-icon>mdi-calendar</v-icon>
+              </template>
+            </v-text-field>
+          </template>
 
-      <div class="filter-group">
-        <label>To Date</label>
-        <input type="date" v-model="toDate" class="form-input" />
-      </div>
+          <v-date-picker
+            v-model="fromDate"
+            @update:model-value="fromMenu = false"
+          />
+        </v-menu>
+      </v-col>
 
-      <div class="filter-group">
-        <label>&nbsp;</label>
-        <button class="btn btn-secondary" @click="clearAll">
-          <i class="fas fa-times"></i> Clear Filters
-        </button>
-      </div>
-    </div>
-  </div>
+      <!-- To Date -->
+      <v-col cols="12" md="4">
+        <v-menu
+          v-model="toMenu"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
+        >
+          <template v-slot:activator="{ props }">
+            <v-text-field
+              v-model="toDate"
+              label="To Date"
+              readonly
+              v-bind="props"
+            >
+              <template #append-inner>
+                <v-icon>mdi-calendar</v-icon>
+              </template>
+            </v-text-field>
+          </template>
+
+          <v-date-picker
+            v-model="toDate"
+            @update:model-value="toMenu = false"
+          />
+        </v-menu>
+      </v-col>
+
+      <!-- Clear Button -->
+      <v-col cols="12" md="4">
+        <v-btn class="w-100" color="secondary" @click="clearAll">
+          <v-icon start>mdi-close</v-icon>
+          Clear Filters
+        </v-btn>
+      </v-col>
+    </v-row>
+  </v-card>
 </template>
 
 <script>
@@ -62,35 +111,46 @@ export default {
   setup() {
     const store = useExpenseStore();
 
-    // ✅ Directly bind computed setters to Pinia actions
+    // Bind filters to Pinia store
     const searchInput = computed({
       get: () => store.filters.searchInput,
-      set: (value) => store.setFilter({ key: "searchInput", value }),
+      set: (v) => store.setFilter({ key: "searchInput", value: v }),
     });
 
     const categoryFilter = computed({
       get: () => store.filters.categoryFilter,
-      set: (value) => store.setFilter({ key: "categoryFilter", value }),
+      set: (v) => store.setFilter({ key: "categoryFilter", value: v }),
     });
 
     const paymentFilter = computed({
       get: () => store.filters.paymentFilter,
-      set: (value) => store.setFilter({ key: "paymentFilter", value }),
+      set: (v) => store.setFilter({ key: "paymentFilter", value: v }),
     });
 
     const fromDate = computed({
       get: () => store.filters.fromDate,
-      set: (value) => store.setFilter({ key: "fromDate", value }),
+      set: (v) => store.setFilter({ key: "fromDate", value: v }),
     });
 
     const toDate = computed({
       get: () => store.filters.toDate,
-      set: (value) => store.setFilter({ key: "toDate", value }),
+      set: (v) => store.setFilter({ key: "toDate", value: v }),
     });
 
     function clearAll() {
       store.clearFilters();
     }
+
+    // Dropdown options
+    const categories = [
+      "Food",
+      "Transport",
+      "Entertainment",
+      "Shopping",
+      "Bills",
+      "Others",
+    ];
+    const paymentMethods = ["Cash", "Card"];
 
     return {
       searchInput,
@@ -99,67 +159,9 @@ export default {
       fromDate,
       toDate,
       clearAll,
+      categories,
+      paymentMethods,
     };
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
-  padding: var(--spacing-lg);
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-sm);
-
-  /* Rows */
-  .filter-row {
-    display: flex;
-    gap: var(--spacing-md);
-    flex: 1 1 100%;
-    flex-wrap: wrap;
-    align-items: flex-end;
-  }
-
-  .filter-group {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-    min-width: 150px;
-    flex: 1;
-
-    label {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-  }
-
-  .search-container {
-    position: relative;
-    flex: 1;
-    min-width: 200px;
-
-    .search-input {
-      width: 100%;
-      padding: var(--spacing-md);
-      padding-left: 40px;
-      border: 2px solid var(--border-color);
-      border-radius: var(--border-radius);
-      font-size: 1rem;
-      transition: var(--transition);
-    }
-
-    .search-icon {
-      position: absolute;
-      left: var(--spacing-md);
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-secondary);
-    }
-  }
-}
-</style>

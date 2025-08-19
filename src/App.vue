@@ -8,26 +8,26 @@
           <div class="card mb-3 expenses-tab-container">
             <FiltersPanel v-if="activeTab === 'expenses'" />
             <div class="flex gap-3 items-center mb-3 tab-header">
-              <button
-                :class="[
-                  'btn btn-secondary tab-btn',
-                  { active: activeTab === 'expenses' },
-                ]"
+              <v-btn
+                class="btn btn-secondary tab-btn"
+                :class="{ active: activeTab === 'expenses' }"
                 @click="activeTab = 'expenses'"
+                variant="outlined"
+                rounded
               >
                 Expenses
-              </button>
-              <button
-                :class="[
-                  'btn btn-secondary tab-btn',
-                  { active: activeTab === 'budget' },
-                ]"
+              </v-btn>
+
+              <v-btn
+                class="btn btn-secondary tab-btn"
+                :class="{ active: activeTab === 'budget' }"
                 @click="activeTab = 'budget'"
+                variant="outlined"
+                rounded
               >
                 Budget Tracker
-              </button>
+              </v-btn>
             </div>
-
             <div v-show="activeTab === 'expenses'">
               <ExpenseTable @edit="openEdit" />
             </div>
@@ -47,7 +47,7 @@
       :editing="editingExpense"
       @close="closeExpenseModal"
     />
-    <BudgetModal v-if="showBudgetModal" @close="closeBudgetModal" />
+    <BudgetModal v-model="showBudgetModal" />
     <AppToasts />
   </div>
 </template>
@@ -121,6 +121,20 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.btn {
+  background-color: white;
+  transition: background-color 0.3s ease;
+  &:hover {
+    background-color: #f5f5f5;
+  }
+  &.active,
+  &:active {
+    background-color: #f0f0f0;
+  }
+}
+.tab-header {
+  margin-top: 25px;
+}
 @media (max-width: 768px) {
   .container {
     padding: var(--spacing-md);
