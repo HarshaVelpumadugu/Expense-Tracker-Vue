@@ -32,7 +32,7 @@
       </v-col>
     </v-row>
 
-    <!-- ✅ From Date, To Date, Clear Filters -->
+    <!-- From Date, To Date, Clear Filters -->
     <v-row dense>
       <!-- From Date -->
       <v-col cols="12" md="4">
@@ -45,20 +45,18 @@
         >
           <template v-slot:activator="{ props }">
             <v-text-field
-              v-model="fromDate"
+              v-model="fromDateFormatted"
               label="From Date"
               readonly
               v-bind="props"
-            >
-              <template #append-inner>
-                <v-icon>mdi-calendar</v-icon>
-              </template>
-            </v-text-field>
+              prepend-inner-icon="mdi-calendar"
+            />
           </template>
 
           <v-date-picker
             v-model="fromDate"
             @update:model-value="fromMenu = false"
+            show-adjacent-months
           />
         </v-menu>
       </v-col>
@@ -74,26 +72,24 @@
         >
           <template v-slot:activator="{ props }">
             <v-text-field
-              v-model="toDate"
+              v-model="toDateFormatted"
               label="To Date"
               readonly
               v-bind="props"
-            >
-              <template #append-inner>
-                <v-icon>mdi-calendar</v-icon>
-              </template>
-            </v-text-field>
+              prepend-inner-icon="mdi-calendar"
+            />
           </template>
 
           <v-date-picker
             v-model="toDate"
             @update:model-value="toMenu = false"
+            show-adjacent-months
           />
         </v-menu>
       </v-col>
 
       <!-- Clear Button -->
-      <v-col cols="12" md="4">
+      <v-col cols="12" md="4" class="d-flex align-start">
         <v-btn class="w-100" color="secondary" @click="clearAll">
           <v-icon start>mdi-close</v-icon>
           Clear Filters
@@ -104,12 +100,16 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useExpenseStore } from "../store/index.js";
 
 export default {
   setup() {
     const store = useExpenseStore();
+
+    // Menu states for date pickers
+    const fromMenu = ref(false);
+    const toMenu = ref(false);
 
     // Bind filters to Pinia store
     const searchInput = computed({
@@ -137,11 +137,35 @@ export default {
       set: (v) => store.setFilter({ key: "toDate", value: v }),
     });
 
+    // Formatted date displays
+    const fromDateFormatted = computed(() => {
+      return fromDate.value ? formatDate(fromDate.value) : "";
+    });
+
+    const toDateFormatted = computed(() => {
+      return toDate.value ? formatDate(toDate.value) : "";
+    });
+
+    // Helper function to format dates
+    function formatDate(date) {
+      if (!date) return "";
+
+      // Handle different date formats
+      const d = new Date(date);
+      if (isNaN(d.getTime())) return "";
+
+      return d.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+    }
+
     function clearAll() {
       store.clearFilters();
     }
 
-    // Dropdown options
+    // Dropdown options - match your actual data format
     const categories = [
       "Food",
       "Transport",
@@ -158,6 +182,10 @@ export default {
       paymentFilter,
       fromDate,
       toDate,
+      fromDateFormatted,
+      toDateFormatted,
+      fromMenu,
+      toMenu,
       clearAll,
       categories,
       paymentMethods,

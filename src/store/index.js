@@ -19,10 +19,10 @@ export const useExpenseStore = defineStore("expenses", {
     editingExpense: null,
     filters: {
       searchInput: "",
-      categoryFilter: "",
-      paymentFilter: "",
-      fromDate: "",
-      toDate: "",
+      categoryFilter: null, // Changed from "" to null
+      paymentFilter: null, // Changed from "" to null
+      fromDate: null, // Changed from "" to null
+      toDate: null, // Changed from "" to null
     },
     currentPage: 1,
     itemsPerPage: 5,
@@ -83,38 +83,62 @@ export const useExpenseStore = defineStore("expenses", {
 
     filteredExpenses: (state) => {
       let filtered = [...state.expenses];
-      const s = state.filters.searchInput.trim().toLowerCase();
-      if (s) {
+
+      // Search filter
+      const searchTerm = state.filters.searchInput?.trim().toLowerCase();
+      if (searchTerm) {
         filtered = filtered.filter(
           (exp) =>
-            exp.description.toLowerCase().includes(s) ||
-            exp.category.toLowerCase().includes(s)
+            exp.description?.toLowerCase().includes(searchTerm) ||
+            exp.category?.toLowerCase().includes(searchTerm)
         );
-      }
-      if (state.filters.categoryFilter) {
-        filtered = filtered.filter(
-          (exp) => exp.category === state.filters.categoryFilter
-        );
-      }
-      if (state.filters.paymentFilter) {
-        filtered = filtered.filter(
-          (exp) => exp.paymentMethod === state.filters.paymentFilter
-        );
-      }
-      if (state.filters.fromDate) {
-        filtered = filtered.filter((exp) => exp.date >= state.filters.fromDate);
-      }
-      if (state.filters.toDate) {
-        filtered = filtered.filter((exp) => exp.date <= state.filters.toDate);
       }
 
-      // sorting
+      // Category filter - handle both cases
+      if (state.filters.categoryFilter) {
+        filtered = filtered.filter((exp) => {
+          const expCategory = exp.category?.toLowerCase();
+          const filterCategory = state.filters.categoryFilter.toLowerCase();
+          return expCategory === filterCategory;
+        });
+      }
+
+      // Payment method filter - handle both cases
+      if (state.filters.paymentFilter) {
+        filtered = filtered.filter((exp) => {
+          const expPayment = exp.paymentMethod?.toLowerCase();
+          const filterPayment = state.filters.paymentFilter.toLowerCase();
+          return expPayment === filterPayment;
+        });
+      }
+
+      // Date filters with proper date handling
+      if (state.filters.fromDate) {
+        filtered = filtered.filter((exp) => {
+          const expDate = new Date(exp.date);
+          const fromDate = new Date(state.filters.fromDate);
+          return expDate >= fromDate;
+        });
+      }
+
+      if (state.filters.toDate) {
+        filtered = filtered.filter((exp) => {
+          const expDate = new Date(exp.date);
+          const toDate = new Date(state.filters.toDate);
+          // Set toDate to end of day for inclusive comparison
+          toDate.setHours(23, 59, 59, 999);
+          return expDate <= toDate;
+        });
+      }
+
+      // Sorting
       filtered.sort((a, b) => {
         let aValue = a[state.sortField];
         let bValue = b[state.sortField];
+
         if (state.sortField === "amount") {
-          aValue = Number(aValue);
-          bValue = Number(bValue);
+          aValue = Number(aValue) || 0;
+          bValue = Number(bValue) || 0;
         } else if (state.sortField === "date") {
           aValue = new Date(aValue);
           bValue = new Date(bValue);
@@ -122,6 +146,7 @@ export const useExpenseStore = defineStore("expenses", {
           aValue = (aValue + "").toLowerCase();
           bValue = (bValue + "").toLowerCase();
         }
+
         if (aValue < bValue) return state.sortDirection === "asc" ? -1 : 1;
         if (aValue > bValue) return state.sortDirection === "asc" ? 1 : -1;
         return 0;
@@ -133,19 +158,13 @@ export const useExpenseStore = defineStore("expenses", {
     paginatedExpenses: (state) => {
       const start = (state.currentPage - 1) * state.itemsPerPage;
       const end = start + state.itemsPerPage;
-      return (
-        state.filteredExpenses?.slice(start, end) ||
-        useExpenseStore().filteredExpenses.slice(start, end)
-      );
+      return state.filteredExpenses.slice(start, end);
     },
 
     totalPages: (state) =>
       Math.max(
         1,
-        Math.ceil(
-          (state.filteredExpenses?.length ||
-            useExpenseStore().filteredExpenses.length) / state.itemsPerPage
-        )
+        Math.ceil(state.filteredExpenses.length / state.itemsPerPage)
       ),
   },
 
@@ -205,16 +224,17 @@ export const useExpenseStore = defineStore("expenses", {
     },
     setFilter({ key, value }) {
       this.filters[key] = value;
-      this.currentPage = 1;
+      this.currentPage = 1; // Reset to first page when filtering
     },
     clearFilters() {
       this.filters = {
         searchInput: "",
-        categoryFilter: "",
-        paymentFilter: "",
-        fromDate: "",
-        toDate: "",
+        categoryFilter: null,
+        paymentFilter: null,
+        fromDate: null,
+        toDate: null,
       };
+      this.currentPage = 1; // Reset to first page
     },
     changePage(page) {
       this.currentPage = page;
