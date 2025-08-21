@@ -54,18 +54,27 @@
 
         <!-- Actions Column -->
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn
-            icon
-            x-small
-            color="primary"
-            @click="$emit('edit', item)"
-            class="mr-1"
-          >
-            <v-icon x-small>mdi-pencil</v-icon>
-          </v-btn>
-          <v-btn icon x-small color="error" @click="deleteExpense(item.id)">
-            <v-icon x-small>mdi-delete</v-icon>
-          </v-btn>
+          <div class="d-flex align-center">
+            <!-- Edit -->
+            <v-btn
+              variant="text"
+              density="comfortable"
+              icon
+              @click="$emit('edit', item)"
+            >
+              <v-icon size="20" color="green">mdi-pencil</v-icon>
+            </v-btn>
+
+            <!-- Delete -->
+            <v-btn
+              variant="text"
+              density="comfortable"
+              icon
+              @click="deleteExpense(item.id)"
+            >
+              <v-icon size="20" color="red">mdi-delete</v-icon>
+            </v-btn>
+          </div>
         </template>
 
         <!-- Empty State -->
@@ -284,10 +293,6 @@ export default {
 
   .v-btn {
     transition: all 0.2s ease-in-out;
-
-    &:hover {
-      transform: scale(1.1);
-    }
   }
 }
 
