@@ -2,19 +2,29 @@
   <div class="budget-card">
     <div class="budget-header">
       <h2><i class="fas fa-target"></i> Budget Tracker</h2>
-      <button class="btn btn-secondary" @click="$emit('open-budget')">
+      <v-btn
+        color="secondary"
+        variant="outlined"
+        density="comfortable"
+        @click="$emit('open-budget')"
+      >
         <i class="fas fa-cog"></i> Setup Budget
-      </button>
+      </v-btn>
     </div>
+
     <div class="budget-content">
       <div id="budgetContainer">
         <div v-if="noBudgets" class="empty-state">
           <div class="icon"><i class="fas fa-bullseye"></i></div>
           <h3>No Budgets Set</h3>
           <p>Set up your monthly budget to track your spending goals</p>
-          <button class="btn btn-primary" @click="$emit('open-budget')">
+          <v-btn
+            color="primary"
+            density="comfortable"
+            @click="$emit('open-budget')"
+          >
             <i class="fas fa-plus"></i> Setup Budget
-          </button>
+          </v-btn>
         </div>
 
         <div v-else class="budget-list">
@@ -35,25 +45,23 @@
                   / ₹{{ amount.toLocaleString("en-IN") }}
                 </span>
               </div>
-              <button
-                class="btn-icon btn-delete"
+              <v-btn
+                icon
+                color="error"
+                variant="text"
                 @click="deleteBudget(category)"
               >
                 <i class="fas fa-trash"></i>
-              </button>
+              </v-btn>
             </div>
 
-            <div class="progress-bar">
-              <div
-                :class="['progress-fill', progressClass(category)]"
-                :style="{
-                  width:
-                    progressPercent(category) > 100
-                      ? 100 + '%'
-                      : progressPercent(category) + '%',
-                }"
-              ></div>
-            </div>
+            <!-- Vuetify Progress -->
+            <v-progress-linear
+              :model-value="progressPercent(category)"
+              height="10"
+              rounded
+              :color="progressColor(category)"
+            ></v-progress-linear>
 
             <div class="budget-details">
               <span
@@ -115,11 +123,11 @@ export default {
       return (spent / budget) * 100;
     }
 
-    function progressClass(category) {
+    function progressColor(category) {
       const p = progressPercent(category);
-      if (p < 70) return "progress-success";
-      if (p >= 70 && p <= 90) return "progress-warning";
-      return "progress-danger";
+      if (p < 70) return "success";
+      if (p >= 70 && p <= 90) return "warning";
+      return "error";
     }
 
     function categoryIcon(c) {
@@ -157,7 +165,7 @@ export default {
       noBudgets,
       spentByCategory,
       progressPercent,
-      progressClass,
+      progressColor,
       categoryIcon,
       categoryName,
       deleteBudget,
@@ -175,7 +183,7 @@ export default {
   .budget-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .budget-list {
@@ -191,29 +199,7 @@ export default {
       .budget-item-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-      }
-
-      .progress-bar {
-        height: 8px;
-        background: #ddd;
-        border-radius: 4px;
-        margin: 0.5rem 0;
-
-        .progress-fill {
-          height: 8px;
-          border-radius: 4px;
-
-          &.progress-success {
-            background: #4caf50;
-          }
-          &.progress-warning {
-            background: #ffc107;
-          }
-          &.progress-danger {
-            background: #f44336;
-          }
-        }
+        align-items: flex-start;
       }
 
       .budget-details {
