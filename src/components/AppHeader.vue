@@ -13,7 +13,7 @@
         size="large"
       >
         <v-icon start size="small">mdi-plus</v-icon>
-        Add Expense
+        <span class="btn-text">Add Expense</span>
       </v-btn>
     </div>
   </header>
@@ -49,12 +49,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 1rem;
-  max-width: 100%;
+  padding: 1rem 1rem;
+  width: calc(100% + 0px);
   margin: 0 auto;
 
   h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 700;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     -webkit-background-clip: text;

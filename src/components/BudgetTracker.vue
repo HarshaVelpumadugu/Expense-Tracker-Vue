@@ -183,7 +183,7 @@ export default {
   .budget-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .budget-list {
@@ -199,7 +199,7 @@ export default {
       .budget-item-header {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
       }
 
       .budget-details {

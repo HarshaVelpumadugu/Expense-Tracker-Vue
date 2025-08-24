@@ -2,7 +2,7 @@
   <v-card class="pa-4">
     <v-row dense>
       <!-- Search -->
-      <v-col cols="12" md="4">
+      <v-col cols="12" sm="4" md="4">
         <v-text-field
           v-model="searchInput"
           variant="outlined"
@@ -11,8 +11,9 @@
           clearable
         />
       </v-col>
+
       <!-- Category -->
-      <v-col cols="12" md="4">
+      <v-col cols="12" sm="4" md="4">
         <v-select
           v-model="categoryFilter"
           :items="categories"
@@ -23,7 +24,7 @@
       </v-col>
 
       <!-- Payment Method -->
-      <v-col cols="12" md="4">
+      <v-col cols="12" sm="4" md="4">
         <v-select
           v-model="paymentFilter"
           :items="paymentMethods"
@@ -37,7 +38,7 @@
     <!-- Date Range and Clear Filters Row -->
     <v-row dense>
       <!-- From Date -->
-      <v-col cols="12" md="4">
+      <v-col cols="12" sm="4" md="4">
         <v-menu
           v-model="fromMenu"
           :close-on-content-click="false"
@@ -47,7 +48,7 @@
         >
           <template v-slot:activator="{ props }">
             <v-text-field
-              v-model="fromDateFormatted"
+              :model-value="fromDateFormatted"
               variant="outlined"
               label="From Date"
               readonly
@@ -57,15 +58,21 @@
           </template>
 
           <v-date-picker
-            v-model="fromDate"
-            @update:model-value="fromMenu = false"
+            :model-value="fromDateTemp"
+            @update:model-value="onFromDateSelected"
             show-adjacent-months
-          />
+          >
+            <template #actions>
+              <v-btn text @click="clearFromDate">Clear</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn text @click="fromMenu = false">OK</v-btn>
+            </template>
+          </v-date-picker>
         </v-menu>
       </v-col>
 
       <!-- To Date -->
-      <v-col cols="12" md="4">
+      <v-col cols="12" sm="4" md="4">
         <v-menu
           v-model="toMenu"
           :close-on-content-click="false"
@@ -75,7 +82,7 @@
         >
           <template v-slot:activator="{ props }">
             <v-text-field
-              v-model="toDateFormatted"
+              :model-value="toDateFormatted"
               label="To Date"
               variant="outlined"
               readonly
@@ -85,15 +92,21 @@
           </template>
 
           <v-date-picker
-            v-model="toDate"
-            @update:model-value="toMenu = false"
+            :model-value="toDateTemp"
+            @update:model-value="onToDateSelected"
             show-adjacent-months
-          />
+          >
+            <template #actions>
+              <v-btn text @click="clearToDate">Clear</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn text @click="toMenu = false">OK</v-btn>
+            </template>
+          </v-date-picker>
         </v-menu>
       </v-col>
 
-      <!-- Clear Filters Button - Properly Aligned -->
-      <v-col cols="12" md="4">
+      <!-- Clear Filters Button -->
+      <v-col cols="12" sm="4" md="4">
         <v-btn
           variant="outlined"
           color="error"
@@ -108,7 +121,7 @@
       </v-col>
     </v-row>
 
-    <!-- Optional: Active Filters Summary -->
+    <!-- Active Filters Summary -->
     <v-row v-if="hasActiveFilters" dense class="mt-2">
       <v-col cols="12">
         <v-chip-group>
@@ -144,7 +157,7 @@
             closable
             color="primary"
             variant="outlined"
-            @click:close="fromDate = null"
+            @click:close="clearFromDate"
           >
             From: {{ fromDateFormatted }}
           </v-chip>
@@ -153,7 +166,7 @@
             closable
             color="primary"
             variant="outlined"
-            @click:close="toDate = null"
+            @click:close="clearToDate"
           >
             To: {{ toDateFormatted }}
           </v-chip>
@@ -164,18 +177,22 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useExpenseStore } from "../store/index.js";
 
 export default {
   setup() {
     const store = useExpenseStore();
 
+    // Menus
     const fromMenu = ref(false);
     const toMenu = ref(false);
 
-    const categoryMenu = ref(false);
+    // Temporary Date objects for pickers
+    const fromDateTemp = ref(null);
+    const toDateTemp = ref(null);
 
+    // Filters from store
     const searchInput = computed({
       get: () => store.filters.searchInput,
       set: (v) => store.setFilter({ key: "searchInput", value: v }),
@@ -201,37 +218,113 @@ export default {
       set: (v) => store.setFilter({ key: "toDate", value: v }),
     });
 
-    const fromDateFormatted = computed(() => {
-      return fromDate.value ? formatDate(fromDate.value) : "";
-    });
+    // Formatters
+    const formatDate = (val) => {
+      if (!val) return "";
 
-    const toDateFormatted = computed(() => {
-      return toDate.value ? formatDate(toDate.value) : "";
-    });
+      // If val is already a string in YYYY-MM-DD format, return as is
+      if (typeof val === "string" && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+        return val;
+      }
 
-    function formatDate(date) {
-      if (!date) return "";
-
-      const d = new Date(date);
+      const d = new Date(val);
       if (isNaN(d.getTime())) return "";
 
-      return d.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      });
-    }
+      // Use local date methods instead of toISOString
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
 
-    function selectCategory(category) {
-      categoryFilter.value = category;
-      categoryMenu.value = false;
-    }
+      return `${year}-${month}-${day}`;
+    };
 
-    function clearAll() {
+    const fromDateFormatted = computed(() =>
+      fromDate.value ? formatDate(fromDate.value) : ""
+    );
+    const toDateFormatted = computed(() =>
+      toDate.value ? formatDate(toDate.value) : ""
+    );
+
+    // Keep temp Date in sync with store values
+    watch(
+      () => fromDate.value,
+      (val) => {
+        fromDateTemp.value = val ? new Date(val) : null;
+      },
+      { immediate: true }
+    );
+
+    watch(
+      () => toDate.value,
+      (val) => {
+        toDateTemp.value = val ? new Date(val) : null;
+      },
+      { immediate: true }
+    );
+
+    // Handlers
+    const onFromDateSelected = (date) => {
+      if (!date) {
+        fromDate.value = null;
+        return;
+      }
+
+      // Use local date methods to avoid timezone issues
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const iso = `${year}-${month}-${day}`;
+
+      fromDate.value = iso;
+      fromDateTemp.value = date;
+
+      // if To Date < From Date → reset To Date
+      if (toDate.value && toDate.value < iso) {
+        toDate.value = null;
+        toDateTemp.value = null;
+      }
+    };
+
+    const onToDateSelected = (date) => {
+      if (!date) {
+        toDate.value = null;
+        return;
+      }
+
+      // Use local date methods to avoid timezone issues
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const iso = `${year}-${month}-${day}`;
+
+      if (fromDate.value && iso < fromDate.value) {
+        alert("⚠️ To Date cannot be before From Date");
+        return;
+      }
+      toDate.value = iso;
+      toDateTemp.value = date;
+    };
+
+    const clearFromDate = () => {
+      fromDate.value = null;
+      fromDateTemp.value = null;
+      fromMenu.value = false;
+    };
+
+    const clearToDate = () => {
+      toDate.value = null;
+      toDateTemp.value = null;
+      toMenu.value = false;
+    };
+
+    const clearAll = () => {
       store.clearFilters();
-    }
+      fromDateTemp.value = null;
+      toDateTemp.value = null;
+      fromMenu.value = false;
+      toMenu.value = false;
+    };
 
-    // Dropdown options - match your actual data format
     const categories = [
       "Food",
       "Transport",
@@ -242,19 +335,40 @@ export default {
     ];
     const paymentMethods = ["Cash", "Card"];
 
+    const hasActiveFilters = computed(() => {
+      return (
+        searchInput.value ||
+        categoryFilter.value ||
+        paymentFilter.value ||
+        fromDate.value ||
+        toDate.value
+      );
+    });
+
     return {
+      // store filters
       searchInput,
       categoryFilter,
-      categoryMenu,
       paymentFilter,
       fromDate,
       toDate,
+      // formatted
       fromDateFormatted,
       toDateFormatted,
+      // picker menus
       fromMenu,
       toMenu,
+      // temp pickers
+      fromDateTemp,
+      toDateTemp,
+      // actions
+      onFromDateSelected,
+      onToDateSelected,
+      clearFromDate,
+      clearToDate,
       clearAll,
-      selectCategory,
+      hasActiveFilters,
+      // dropdown data
       categories,
       paymentMethods,
     };
@@ -263,33 +377,26 @@ export default {
 </script>
 
 <style>
-/* Force category dropdown to open downward specifically */
+/* same as your original */
 :deep(.v-select:first-of-type .v-overlay__content) {
   top: auto !important;
   transform: translateY(8px) !important;
 }
-
-/* Alternative approach - target by column position */
 :deep(.v-col:nth-child(2) .v-select .v-overlay__content) {
   top: auto !important;
   bottom: auto !important;
   transform: translateY(8px) !important;
 }
-
-/* Ensure all select menus have proper positioning */
 :deep(.v-select .v-menu .v-overlay__content) {
   position: absolute !important;
   top: 100% !important;
   transform: translateY(4px) !important;
 }
-
 .v-overlay-container .v-list-item:hover {
-  background-color: #1976d2 !important; /* Blue on hover */
+  background-color: #1976d2 !important;
   color: #fff !important;
   border-radius: 6px;
 }
-
-/* Active/selected item */
 .v-overlay-container .v-list-item.v-list-item--active {
   background-color: #1565c0 !important;
   color: #fff !important;

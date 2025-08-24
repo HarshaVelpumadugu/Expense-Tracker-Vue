@@ -82,7 +82,7 @@
           </v-text-field>
 
           <!-- Date Picker Dialog -->
-          <v-dialog v-model="datePickerOpen" max-width="290px">
+          <v-dialog v-model="datePickerOpen" max-width="280px">
             <v-date-picker
               v-model="selectedDate"
               @update:model-value="onDateSelected"

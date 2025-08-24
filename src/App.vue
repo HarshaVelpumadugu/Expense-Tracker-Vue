@@ -3,50 +3,56 @@
     <AppHeader @open-add="onOpenAdd" />
     <div :class="['container', { blur: showExpenseModal || showBudgetModal }]">
       <StatsGrid />
-
+      <BarChart class="bar-chart" />
       <div class="grid grid-2">
-        <div>
-          <div class="card mb-3 expenses-tab-container">
-            <!-- Show filters only for Expenses -->
-            <div v-if="activeTab === 'expenses'" class="mb-3">
-              <FiltersPanel />
-            </div>
+        <div class="card mb-3 expenses-tab-container">
+          <!-- Show filters only for Expenses -->
+          <div v-if="activeTab === 'expenses'" class="mb-3">
+            <FiltersPanel class="filters-panel" />
+          </div>
 
-            <!-- Tabs -->
-            <div class="flex gap-3 items-center mb-3 tab-header" role="tablist">
-              <button
-                role="tab"
-                :aria-selected="activeTab === 'expenses'"
-                class="tab-btn"
-                :class="{ active: activeTab === 'expenses' }"
-                @click="activeTab = 'expenses'"
-              >
-                Expenses
-              </button>
+          <!-- Tabs -->
+          <div class="flex gap-3 items-center mb-3 tab-header" role="tablist">
+            <button
+              role="tab"
+              :aria-selected="activeTab === 'expenses'"
+              class="tab-btn"
+              :class="{ active: activeTab === 'expenses' }"
+              @click="activeTab = 'expenses'"
+            >
+              Expenses
+            </button>
 
-              <button
-                role="tab"
-                :aria-selected="activeTab === 'budget'"
-                class="tab-btn"
-                :class="{ active: activeTab === 'budget' }"
-                @click="activeTab = 'budget'"
-              >
-                Budget Tracker
-              </button>
-            </div>
+            <button
+              role="tab"
+              :aria-selected="activeTab === 'budget'"
+              class="tab-btn"
+              :class="{ active: activeTab === 'budget' }"
+              @click="activeTab = 'budget'"
+            >
+              Budget Tracker
+            </button>
+          </div>
 
-            <!-- Tab Panels -->
-            <div v-show="activeTab === 'expenses'" role="tabpanel">
-              <ExpenseTable @edit="openEdit" />
-            </div>
+          <!-- Tab Panels -->
+          <div
+            v-show="activeTab === 'expenses'"
+            role="tabpanel"
+            class="expense-table"
+          >
+            <ExpenseTable @edit="openEdit" />
+          </div>
 
-            <div v-show="activeTab === 'budget'" role="tabpanel">
-              <BudgetTracker @open-budget="showBudgetModal = true" />
-            </div>
+          <div
+            v-show="activeTab === 'budget'"
+            role="tabpanel"
+            class="budget-tracker"
+          >
+            <BudgetTracker @open-budget="showBudgetModal = true" />
           </div>
         </div>
 
-        <CategoryChart />
+        <CategoryChart class="category-chart" />
       </div>
     </div>
 
@@ -73,6 +79,7 @@ import BudgetTracker from "./components/BudgetTracker.vue";
 import ExpenseModal from "./components/ExpenseModal.vue";
 import BudgetModal from "./components/BudgetModal.vue";
 import AppToasts from "./components/AppToasts.vue";
+import BarChart from "./components/BarChart.vue";
 
 export default {
   components: {
@@ -85,6 +92,7 @@ export default {
     ExpenseModal,
     BudgetModal,
     AppToasts,
+    BarChart,
   },
   setup() {
     const store = useExpenseStore();
@@ -127,10 +135,11 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  padding-left: 2rem;
-  padding-right: 2rem;
-  margin-top: 120px;
+  max-width: 1400px;
+  padding: 0 24px;
+  margin: 100px auto 0;
 }
+
 .tab-header {
   margin-top: 10px;
 }

@@ -7,8 +7,8 @@
   >
     <v-card class="pa-6 rounded-xl" width="420">
       <!-- Header with close button -->
-      <div class="d-flex justify-space-between align-center mb-4">
-        <h2 class="text-h6 font-weight-medium d-flex align-center">
+      <div class="d-flex justify-space-between align-center mb-4 header-row">
+        <h2 class="text-h6 font-weight-medium d-flex align-center mb-0">
           <v-icon icon="mdi-target" class="mr-2" />
           Setup Monthly Budget
         </h2>
@@ -144,5 +144,34 @@ export default {
 
 .v-overlay {
   backdrop-filter: blur(3px);
+}
+
+/* ✅ Responsive adjustments for 320px screens */
+@media (max-width: 320px) {
+  .v-card {
+    width: 90vw !important;
+    max-width: 90vw !important;
+    padding: 1rem !important;
+  }
+
+  h2 {
+    font-size: 0.95rem !important;
+  }
+
+  .v-select,
+  .v-text-field {
+    font-size: 0.85rem !important;
+  }
+
+  .v-btn.w-100 {
+    font-size: 0.85rem !important;
+    padding: 0.6rem !important;
+  }
+
+  .modal-close {
+    top: 0.4rem;
+    right: 0.4rem;
+    font-size: 1rem;
+  }
 }
 </style>

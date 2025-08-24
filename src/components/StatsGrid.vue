@@ -99,5 +99,59 @@ export default {
       opacity: 0.8;
     }
   }
+
+  /* 📱 Tablet screens (≤768px) */
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+
+    .stat-card {
+      padding: var(--spacing-md);
+      min-height: 100px;
+
+      .icon {
+        font-size: 1.5rem;
+      }
+
+      .value {
+        font-size: 1.25rem;
+      }
+
+      .label {
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  /* 📱 For small screens (≤320px) */
+  @media (max-width: 320px) {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    padding: 0 var(--spacing-xs);
+
+    .stat-card {
+      padding: var(--spacing-sm);
+      min-height: 70px; /* smaller height */
+      margin-bottom: var(--spacing-xs);
+
+      .icon {
+        font-size: 1rem; /* smaller icon */
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .value {
+        font-size: 1rem; /* smaller text */
+        line-height: 1.2;
+        word-break: break-word;
+      }
+
+      .label {
+        font-size: 0.7rem; /* smaller label */
+        line-height: 1.2;
+      }
+    }
+  }
 }
 </style>
