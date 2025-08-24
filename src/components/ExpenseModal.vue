@@ -339,6 +339,7 @@ export default {
 
 <style lang="scss" scoped>
 .expense-card {
+  margin: auto;
   :deep(.v-field__input) {
     min-height: 40px;
   }

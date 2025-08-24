@@ -18,13 +18,6 @@
           <div class="icon"><i class="fas fa-bullseye"></i></div>
           <h3>No Budgets Set</h3>
           <p>Set up your monthly budget to track your spending goals</p>
-          <v-btn
-            color="primary"
-            density="comfortable"
-            @click="$emit('open-budget')"
-          >
-            <i class="fas fa-plus"></i> Setup Budget
-          </v-btn>
         </div>
 
         <div v-else class="budget-list">

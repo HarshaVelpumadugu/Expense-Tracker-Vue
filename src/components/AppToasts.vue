@@ -40,6 +40,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  z-index: 2003;
 
   .toast {
     background: #333;
