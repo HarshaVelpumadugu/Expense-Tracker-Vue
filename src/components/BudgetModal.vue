@@ -147,7 +147,7 @@ export default {
 }
 
 /* ✅ Responsive adjustments for 320px screens */
-@media (max-width: 320px) {
+@media (max-width: 480px) {
   .v-card {
     width: 90vw !important;
     max-width: 90vw !important;

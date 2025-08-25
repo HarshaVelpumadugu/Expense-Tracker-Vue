@@ -264,6 +264,59 @@ select .form-input {
 .category-chart {
   display: block; /* Shown by default (for >768px) */
 }
+@media (max-width: 1024px) {
+  .bar-chart {
+    display: block;
+  }
+  .category-chart {
+    display: none;
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    padding: 0 var(--spacing-sm);
+  }
+
+  .stat-card {
+    padding: var(--spacing-md);
+    min-height: 100px;
+    margin-bottom: var(--spacing-sm);
+
+    .icon {
+      font-size: 1.5rem;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .value {
+      font-size: 1.5rem;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .label {
+      font-size: 0.8rem;
+    }
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 25px;
+    .expenses-tab-container > .filters-panel {
+      grid-column: 1 / -1; /* full width */
+      grid-row: 1;
+    }
+  }
+
+  .expenses-tab-container > .budget-tracker,
+  .expenses-tab-container > .expense-table {
+    grid-column: 1 / -1; /* full width */
+    grid-row: 2;
+  }
+}
 
 @media (max-width: 768px) {
   .container {
@@ -481,10 +534,10 @@ select .form-input {
 
     .budget-header {
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      // flex-direction: column;
+      // gap: 1rem;
       h2 {
-        font-size: 1.25rem;
+        font-size: 1rem;
       }
     }
 
